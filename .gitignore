@@ -29,6 +29,8 @@ __pycache__/
 .env.*
 *.env
 backend/.env
+!.env.example
+!backend/.env.example
 
 # Editor & OS files
 .vscode/*
