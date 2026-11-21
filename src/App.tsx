@@ -29,10 +29,10 @@ const queryClient = new QueryClient();
 // Layout component to conditionally render Navbar
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  
+
   // Define routes where navbar should not be shown
-  const noNavbarRoutes = ["/auth"];
-  
+  const noNavbarRoutes = ["/auth", "/", "/landing"];
+
   const showNavbar = !noNavbarRoutes.includes(location.pathname);
 
   return (
@@ -54,9 +54,10 @@ const App = () => (
             <BrowserRouter>
               <Layout>
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/intake" element={<CareerIntake />} />
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/landing" element={<Landing />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/intake" element={<CareerIntake />} />
                   <Route path="/projects" element={<PortfolioProjects />} />
                   <Route path="/bounty-board" element={<PortfolioProjects />} />
                   <Route path="/verify-skills" element={<VerifySkills />} />
