@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "./api";
+
 export interface RubricBreakdown {
   technical_accuracy: number;
   practical_depth: number;
@@ -18,7 +20,7 @@ export async function generateSkillQuestions(
   targetRole: string
 ): Promise<string[]> {
   try {
-    const res = await fetch("http://127.0.0.1:8000/generate-questions", {
+    const res = await fetch(`${API_BASE_URL}/generate-questions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -53,7 +55,7 @@ export async function evaluateFullInterview(
 ): Promise<InterviewEvaluationResult> {
   console.log("📡 Sending interview to backend evaluation");
 
-  const res = await fetch("http://127.0.0.1:8000/evaluate-interview", {
+  const res = await fetch(`${API_BASE_URL}/evaluate-interview`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

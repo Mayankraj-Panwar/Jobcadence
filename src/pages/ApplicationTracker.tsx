@@ -26,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { useCareer, ApplicationItem, ApplicationInsights } from "@/contexts/CareerContext";
+import { API_BASE_URL } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -83,7 +84,7 @@ export default function ApplicationTracker() {
         }))
       };
 
-      const res = await fetch("http://127.0.0.1:8000/analyze-applications", {
+      const res = await fetch(`${API_BASE_URL}/analyze-applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

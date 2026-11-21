@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { useCareer, defaultCareerState } from "@/contexts/CareerContext";
+import { API_BASE_URL } from "@/lib/api";
 import { toast } from "sonner";
 
 export default function CareerIntake() {
@@ -82,13 +83,13 @@ export default function CareerIntake() {
         formData.append("resume_text", resumeText);
         formData.append("resume_pdf", selectedFile);
 
-        response = await fetch("http://127.0.0.1:8000/analyze-gap", {
+        response = await fetch(`${API_BASE_URL}/analyze-gap`, {
           method: "POST",
           body: formData,
         });
       } else {
         // Send JSON
-        response = await fetch("http://127.0.0.1:8000/analyze-gap", {
+        response = await fetch(`${API_BASE_URL}/analyze-gap`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
