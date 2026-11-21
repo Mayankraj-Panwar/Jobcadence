@@ -39,10 +39,10 @@ export interface User {
 }
 
 export const mockStudentUser: User = {
-  id: "student_demo_1",
-  name: "Alex Chen",
-  email: "alex.chen@university.edu",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+  id: "nehal_user_1",
+  name: "Nehal Jain",
+  email: "nehaljain848@gmail.com",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nehal",
   role: "student",
   skillDNA: "Executor",
   trustScore: 847,
@@ -51,16 +51,14 @@ export const mockStudentUser: User = {
   verifiedBadges: [
     { id: "1", skill: "React.js", score: 92, verifiedAt: "2024-01-15", confidence: "high" },
     { id: "2", skill: "Python", score: 85, verifiedAt: "2024-01-10", confidence: "high" },
-    { id: "3", skill: "Machine Learning", score: 78, verifiedAt: "2024-01-08", confidence: "medium" },
-    { id: "4", skill: "UI/UX Design", score: 88, verifiedAt: "2024-01-05", confidence: "high" },
   ],
 };
 
 export const mockAlumniUser: User = {
   id: "alumni_demo_2",
-  name: "Sarah Johnson",
-  email: "sarah.johnson@techcorp.com",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+  name: "Nehal Jain (Alumni / Mentor)",
+  email: "nehaljain848@gmail.com",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=NehalAlumni",
   role: "alumni",
   skillDNA: "Architect",
   trustScore: 920,
@@ -76,6 +74,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isNewUser: boolean;
   login: (role: UserRole, customUser?: User) => void;
+  updateUserName: (name: string) => void;
   loginWithGoogle: (role: UserRole) => Promise<void>;
   completeStudentProfile: (data: {
     whatsapp: string;
@@ -91,33 +90,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : null;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.name !== "Alex Chen" && parsed.name !== "Test User") {
+          return parsed;
+        }
+      }
     } catch {
-      return null;
+      // fallback
     }
+    // Default to Nehal Jain so user is always authenticated and sees their name immediately
+    return mockStudentUser;
   });
   const [isNewUser, setIsNewUser] = useState(false);
+
+  // Sync default user to storage on load if not already saved
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (!saved || saved.includes("Alex Chen") || saved.includes("Test User")) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mockStudentUser));
+        setUser(mockStudentUser);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     let unsubDoc: (() => void) | null = null;
 
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
-        // If not in Firebase, keep user if logged in via mock/localStorage, or null
         const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (saved) {
           try {
             setUser(JSON.parse(saved));
           } catch {
-            setUser(null);
+            setUser(mockStudentUser);
           }
+        } else {
+          setUser(mockStudentUser);
         }
         return;
       }
 
       const ref = doc(db, "users", firebaseUser.uid);
 
-      // Real-time listener
       unsubDoc = onSnapshot(
         ref,
         (snap) => {
@@ -149,6 +166,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUser));
   };
 
+  const updateUserName = (name: string) => {
+    setUser((prev) => {
+      if (!prev) return mockStudentUser;
+      const updated = { ...prev, name: name.trim() || "Nehal Jain" };
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const loginWithGoogle = async (role: UserRole) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -159,8 +185,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!snap.exists()) {
       const initialUser = {
-        name: u.displayName || "Student",
-        email: u.email || "",
+        name: u.displayName || "Nehal Jain",
+        email: u.email || "nehaljain848@gmail.com",
         avatar: u.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.uid}`,
         role,
         skillDNA: (role === "student" ? "Executor" : "Architect") as "Executor" | "Architect",
@@ -230,9 +256,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth);
-    } catch {
-      // ignore sign out error
-    }
+    } catch {}
     setUser(null);
     setIsNewUser(false);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -246,6 +270,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         isNewUser,
         login,
+        updateUserName,
         loginWithGoogle,
         completeStudentProfile,
         updateUserCredits,

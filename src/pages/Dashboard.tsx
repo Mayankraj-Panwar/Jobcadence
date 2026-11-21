@@ -26,10 +26,12 @@ import { VerifiedBadge } from "@/components/ui/verified-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import LearningCurve from "@/components/ui/learning-curve";
 import { useCareer } from "@/contexts/CareerContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state, dismissRecalibrationAlert, completeProject } = useCareer();
+  const { user } = useAuth();
 
   // Compute Target Readiness based on match score and verified skills
   const targetReadiness = Math.min(
@@ -149,14 +151,14 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <span>Transition Goal</span>
+              <span>Candidate: <strong className="text-foreground font-semibold">{user?.name || "Nehal Jain"}</strong></span>
               <span>&bull;</span>
               <span className="text-foreground font-medium">{state.current_role}</span>
               <ArrowRight className="w-3.5 h-3.5 text-primary" />
               <span className="text-primary font-bold">{state.target_role}</span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight">
-              Career Pivot Dashboard
+              Welcome back, <span className="text-primary">{user?.name || "Nehal Jain"}</span> 👋
             </h1>
           </div>
 

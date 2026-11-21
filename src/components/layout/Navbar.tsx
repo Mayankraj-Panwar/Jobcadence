@@ -132,17 +132,20 @@ export const Navbar = () => {
                 <div className="relative">
                   <Button
                     variant="ghost"
-                    size="icon"
-                    className="relative h-8 w-8 rounded-full"
+                    size="sm"
+                    className="relative flex items-center gap-2 pl-2 pr-3 h-9 rounded-full border border-border/50 hover:bg-muted/60"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsUserMenuOpen(!isUserMenuOpen);
                     }}
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-6 w-6">
                       <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>{user.name?.charAt(0) || "N"}</AvatarFallback>
                     </Avatar>
+                    <span className="text-xs font-semibold text-foreground max-w-[120px] truncate">
+                      {user.name}
+                    </span>
                   </Button>
                   
                   <AnimatePresence>
