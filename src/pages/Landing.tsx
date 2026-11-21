@@ -52,10 +52,10 @@ export default function Landing() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FCA311] to-[#F77F00] flex items-center justify-center">
-              <span className="text-foreground font-bold text-lg">SS</span>
+              <span className="text-foreground font-bold text-lg">JC</span>
             </div>
             <span className="text-xl font-bold text-foreground">
-              Samarth<span className="font-normal">Sarthi</span>
+              Job<span className="font-normal">cadence</span>
             </span>
           </Link>
           <div className="flex items-center gap-3">
@@ -310,10 +310,10 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#FCA311] to-[#F77F00] flex items-center justify-center">
-                <span className="text-foreground font-bold text-xs">SS</span>
+                <span className="text-foreground font-bold text-xs">JC</span>
               </div>
               <span className="text-sm text-muted-foreground">
-                © 2024 SamarthSarthi AI. All rights reserved.
+                © 2026 Jobcadence • Career Pivot Coach. All rights reserved.
               </span>
             </div>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">

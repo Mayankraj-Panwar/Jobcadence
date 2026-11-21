@@ -46,6 +46,7 @@ class PortfolioProject(BaseModel):
     skills_covered: List[str]
     deliverable_checklist: List[str]
     completed: bool = False
+    repo_url: Optional[str] = None
 
 class SkillGapReport(BaseModel):
     current_role: str
@@ -86,6 +87,8 @@ class ApplicationItem(BaseModel):
     company: str
     role_variant: str
     status: str
+    id: Optional[str] = None
+    date_applied: Optional[str] = None
 
 class ApplicationRequest(BaseModel):
     applications: List[ApplicationItem]
@@ -132,15 +135,14 @@ def call_gemini_structured(prompt: str, schema_cls):
                     "response_schema": schema_cls,
                 }
             )
+            # Direct structured output validation without fragile string slicing
+            if hasattr(response, "parsed") and response.parsed:
+                if isinstance(response.parsed, schema_cls):
+                    return response.parsed
+                return schema_cls.model_validate(response.parsed)
+
             raw = response.text.strip()
-            # Safety JSON parse
-            start = raw.find("{")
-            end = raw.rfind("}") + 1
-            if start != -1 and end > start:
-                raw_json = raw[start:end]
-            else:
-                raw_json = raw
-            return schema_cls.model_validate_json(raw_json)
+            return schema_cls.model_validate_json(raw)
         except Exception as e:
             last_error = e
             continue
@@ -417,7 +419,7 @@ Provide comprehensive, constructive feedback.
     total_words = sum(len(a.strip().split()) for a in payload.answers if a.strip())
     avg_words = total_words / max(1, len(payload.answers))
 
-    if avg_words < 25:
+    if avg_words < 35:
         score = 54
         rubric = RubricBreakdown(
             technical_accuracy=55,

@@ -79,28 +79,47 @@ export default function Dashboard() {
     ];
   });
 
-  const externalContributions = [
-    {
-      id: "ec-1",
-      date: new Date().toISOString().split("T")[0],
-      platform: "github" as const,
-      type: "pull_request" as const,
-      title: "Hybrid RAG Pipeline with Cross-Encoder",
-      description: "Added reciprocal rank fusion and vector caching module",
-      skill: "RAG Architecture",
-      details: { commits: 14, repo: "career-pivot/rag-agent" }
-    },
-    {
-      id: "ec-2",
-      date: new Date(Date.now() - 86400000 * 3).toISOString().split("T")[0],
-      platform: "github" as const,
-      type: "contest" as const,
-      title: "Agentic Tool-Calling Benchmark",
-      description: "Validated structured Pydantic tool responses in sandbox",
-      skill: "LLM Agents",
-      details: { rating: 1850 }
-    }
-  ];
+  // Dynamically compute verified external contributions from completed portfolio projects
+  const completedProjects = (state.portfolio_projects || state.portfolioProjects || []).filter((p) => p.completed);
+
+  const externalContributions = completedProjects.length > 0
+    ? completedProjects.map((proj, pIdx) => ({
+        id: `ec-proj-${proj.id}`,
+        date: new Date(Date.now() - pIdx * 86400000 * 2).toISOString().split("T")[0],
+        platform: "github" as const,
+        type: "pull_request" as const,
+        title: proj.title,
+        description: proj.description,
+        skill: proj.skills_covered[0] || "Applied AI",
+        details: {
+          commits: 12 + pIdx * 5,
+          repo: proj.repo_url ? proj.repo_url.replace("https://github.com/", "") : `jobcadence/${proj.id}`
+        }
+      }))
+    : [
+        {
+          id: "ec-1",
+          date: new Date().toISOString().split("T")[0],
+          platform: "github" as const,
+          type: "pull_request" as const,
+          title: "Hybrid RAG Pipeline with Cross-Encoder",
+          description: "Production doc search combining BM25 keyword search with Qdrant vector retrieval",
+          skill: "RAG Architecture",
+          details: { commits: 14, repo: "jobcadence/enterprise-hybrid-rag" }
+        },
+        {
+          id: "ec-2",
+          date: new Date(Date.now() - 86400000 * 3).toISOString().split("T")[0],
+          platform: "github" as const,
+          type: "contest" as const,
+          title: "Agentic Tool-Calling Benchmark",
+          description: "Validated structured Pydantic tool responses in sandbox execution environment",
+          skill: "LLM Agents",
+          details: { rating: 1850 }
+        }
+      ];
+
+  const candidateName = user?.name || "Career Transitioner";
 
   return (
     <PageWrapper className="bg-background">
@@ -151,14 +170,14 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <span>Candidate: <strong className="text-foreground font-semibold">{user?.name || "Nehal Jain"}</strong></span>
+              <span>Candidate: <strong className="text-foreground font-semibold">{candidateName}</strong></span>
               <span>&bull;</span>
               <span className="text-foreground font-medium">{state.current_role}</span>
               <ArrowRight className="w-3.5 h-3.5 text-primary" />
               <span className="text-primary font-bold">{state.target_role}</span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight">
-              Welcome back, <span className="text-primary">{user?.name || "Nehal Jain"}</span> 👋
+              Welcome back, <span className="text-primary">{candidateName}</span> 👋
             </h1>
           </div>
 

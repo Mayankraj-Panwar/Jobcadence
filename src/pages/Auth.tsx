@@ -107,15 +107,15 @@ export default function Auth() {
             {/* Logo */}
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FCA311] to-[#F77F00] flex items-center justify-center shadow-glow">
-                <span className="text-white font-bold text-2xl">SS</span>
+                <span className="text-white font-bold text-2xl">JC</span>
               </div>
             </div>
 
             <CardTitle className="text-2xl font-bold">
-              Welcome to Samarth<span className="text-primary">Sarthi</span>
+              Welcome to Job<span className="text-primary">cadence</span>
             </CardTitle>
             <CardDescription className="text-base">
-              Trust. Skills. Proof.
+              Closed-Loop Career Pivot & Skill Proof Platform
             </CardDescription>
           </CardHeader>
 

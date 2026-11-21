@@ -116,7 +116,7 @@ export default function VerifySkills() {
       const comprehensive = `In our production system, we deployed a hybrid retrieval pipeline combining dense embeddings via Qdrant with sparse BM25 scoring, fused through Reciprocal Rank Fusion (RRF). We resolved latency spikes by adding Redis semantic caching with a cosine threshold of 0.94, which reduced upstream LLM calls by 38%. For edge cases like out-of-domain queries, we implemented an asynchronous classification guardrail that falls back to structured web search when confidence drops below 0.70. Automated evaluations run nightly using RAG Triad metrics in CI/CD, guaranteeing faithfulness > 0.88 before deployment.`;
       setCurrentAnswer(comprehensive);
     } else {
-      const minimal = `I usually just use vector databases like Chroma or Pinecone and connect it to an LLM. When an error happens, we can catch it with a try/catch block and retry.`;
+      const minimal = `I just use a basic vector DB and connect it to an LLM with try/catch.`;
       setCurrentAnswer(minimal);
     }
   };

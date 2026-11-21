@@ -67,7 +67,8 @@ export const mockAlumniUser: User = {
   verifiedBadges: [],
 };
 
-const LOCAL_STORAGE_KEY = "samarth_auth_user";
+const LOCAL_STORAGE_KEY = "jobcadence_user";
+const LEGACY_STORAGE_KEY = "samarth_auth_user";
 
 export interface AuthContextType {
   user: User | null;
@@ -89,7 +90,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.name && parsed.name !== "Alex Chen" && parsed.name !== "Test User") {
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sync default user to storage on load if not already saved
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
       if (!saved || saved.includes("Alex Chen") || saved.includes("Test User")) {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mockStudentUser));
         setUser(mockStudentUser);
@@ -120,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
         if (saved) {
           try {
             setUser(JSON.parse(saved));
